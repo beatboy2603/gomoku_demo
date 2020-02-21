@@ -18,22 +18,24 @@ and open the template in the editor.
         <div id="registerDiv">
             <div class="container center">
                 <div class="card">
-                    <div class="card-content">
-                        <span class="card-title">Type your name</span>
-                        <input type="text" id="username" name="username" placeholder="Username"/>
-                    </div>
-                    <div class="card-action">
-                        <button class="waves-effect waves-light btn" onclick="connectSocket(event)">
-                            Join Public Room
-                            <i class="material-icons right">send</i>
-                        </button>
-                    </div>
+                    <form>
+                        <div class="card-content">
+                            <span class="card-title">Type your name</span>
+                            <input type="text" id="username" name="username" placeholder="Username"/>
+                        </div>
+                        <div class="card-action">
+                            <button class="waves-effect waves-light btn" onclick="connectSocket(event)">
+                                Join Public Room
+                                <i class="material-icons right">send</i>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
 
         <div id="publicRoomDiv">
-            
+
         </div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>

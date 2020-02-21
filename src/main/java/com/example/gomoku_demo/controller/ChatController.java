@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  *
@@ -38,9 +39,6 @@ public class ChatController {
     
     @PostMapping("/chat/registerName")
     public String registerName(@RequestBody HashMap<String, String> json, Model model){
-//    public String registerName(@RequestParam("username") String json, Model model){
-        System.out.println("---------------");
-        System.out.println("+++++++++++++++");
         model.addAttribute("username", json.get("username"));
         return "fragments/chatRoom :: publicRoom";
     }
