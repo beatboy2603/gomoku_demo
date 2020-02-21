@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
  * @author ADMIN
  */
 @Controller
-public class TestController {
-    @GetMapping("/")
-    public String a(){
-        System.out.println("abcd");
-        return "index";
+public class GomokuController {
+    
+    @GetMapping("/gomoku")
+    public String getGame(){
+        return "gomoku";
     }
 }
