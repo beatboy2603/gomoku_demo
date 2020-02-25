@@ -8,6 +8,7 @@ $(document).ready(() => {
 });
 
 let stompClient = null;
+let stompClientP2P = null;
 let username = null;
 
 connectSocket = (e) => {
@@ -31,35 +32,32 @@ connectSocket = (e) => {
             }
         })
 
-        $("#chatRoomTitle").mouse
-
         var socket = new SockJS("/chatDemo");
         stompClient = Stomp.over(socket);
-
         stompClient.connect({}, onConnected, onError);
 
-        socket.onclose = () => {
-            console.log('close');
-            let chatMessage = {
-                sender: username,
-                content: username + " has left the room!",
-                messageType: "LEAVE",
-            }
-            stompClient.send("/api/chat/send", {}, JSON.stringify(chatMessage));
-//            stompClient.disconnect();
-//            setConnected();
-        };
+        var socketP2P = new SockJS("/secured/room");
+        stompClientP2P = Stomp.over(socketP2P);
+        stompClientP2P.connect({}, onConnectedPrivate, onErrorPrivate);
     }
 }
 
 onConnected = () => {
-    stompClient.subscribe("/room/public", onMessageReceived);
-
+    stompClient.subscribe("/topic/public", onMessageReceived);
     stompClient.send("/api/chat/register", {}, JSON.stringify({sender: username, messageType: "JOIN"}));
 }
 
 onError = () => {
     alert("error");
+}
+
+onConnectedPrivate = () => {
+    stompClientP2P.subscribe('/secured/user/queue/specific-user'
+            + '-user' + username, onPrivateMessageReceived);
+}
+
+onErrorPrivate = () => {
+    alert("error private");
 }
 
 send = () => {
@@ -70,8 +68,10 @@ send = () => {
             content: message,
             messageType: "CHAT",
         }
-        $("#message").val("");
         stompClient.send("/api/chat/send", {}, JSON.stringify(chatMessage));
+        $("#message").val('');
+        $("#message").height("10px");
+
     }
 }
 
@@ -79,16 +79,46 @@ onMessageReceived = (payload) => {
     let message = JSON.parse(payload.body);
     let html = "";
     html += "<div class='row col s12'>";
-    if (message.sender == username) {
-        html += "<div class='col s8 offset-s2 txt-bubble-right' style='word-wrap: break-word;' dir='rtl'>" + message.content + "</div>";
-        html += "<div class='col s2' dir='rtl'>" + genAva(message.sender) + "</div>";
+    if (message.messageType == "CHAT") {
+        if (message.sender == username) {
+            html += "<div class='col s8 offset-s2 txt-bubble-right' style='word-wrap: break-word; text-align:right;'>"
+                    + message.content + "</div>";
+            html += "<div class='col s2' dir='rtl'>" + genAva(message.sender) + "</div>";
+        } else {
+            html += "<div class='col s2'>" + genAva(message.sender) + "</div>";
+            html += "<div class='col s8 txt-bubble-left' style='word-wrap: break-word;'>" + message.content + "</div>";
+        }
     } else {
-        html += "<div class='col s2'>" + genAva(message.sender) + "</div>";
-        html += "<div class='col s8 txt-bubble-left' style='word-wrap: break-word;'>" + message.content + "</div>";
+        if (message.messageType == "JOIN") {
+            html += "<div class='center grey-text text-lighten-1'>" + message.sender + " has entered the room!</div>";
+        } else {
+            html += "<div class='center grey-text text-lighten-1'>" + message.sender + " has left the room!</div>";
+        }
     }
     html += "</div>";
     $("#chatBoxContent").append(html);
     $("#chatBoxContent").scrollTop(document.getElementById("chatBoxContent").scrollHeight);
+}
+
+p2pSend = () => {
+    let message = $("#p2pMessage").val().trim();
+    let receiver = $("#p2pReceiver").val().trim();
+    if (message && stompClient) {
+        let chatMessage = {
+            sender: username,
+            content: message,
+            receiver: receiver,
+            messageType: "CHAT",
+        }
+        stompClient.send("/api/chat/secured/room-"+receiver, {}, JSON.stringify(chatMessage));
+        $("#p2pMessage").val('');
+        $("#p2pMessage").height("10px");
+    }
+}
+
+onPrivateMessageReceived = (payload) => {
+    let message = JSON.parse(payload.body);
+    console.log("testp2p" + message);
 }
 
 genAva = (name) => {

@@ -1,6 +1,6 @@
 .txt-bubble-right {
     position: relative;
-    background: #ff8000;
+    background: #80ff80;
     border-radius: .4em;
     padding: 10px !important;
     min-height: 50px !important;
@@ -10,11 +10,11 @@
     content: '';
     position: absolute;
     right: 0;
-    top: 50%;
+    top: 20px;
     width: 0;
     height: 0;
     border: 9px solid transparent;
-    border-left-color: #ff8000;
+    border-left-color: #80ff80;
     border-right: 0;
     margin-top: -9px;
     margin-right: -9px;
@@ -22,7 +22,7 @@
 
 .txt-bubble-left {
     position: relative;
-    background: #80ff80;
+    background: #ffb74d;
     border-radius: .4em;
     padding: 10px !important;
     min-height: 50px !important;
@@ -32,11 +32,11 @@
     content: '';
     position: absolute;
     left: 0;
-    top: 50%;
+    top: 20px;
     width: 0;
     height: 0;
     border: 9px solid transparent;
-    border-right-color: #80ff80;
+    border-right-color: #ffb74d;
     border-left: 0;
     margin-top: -9px;
     margin-left: -9px;

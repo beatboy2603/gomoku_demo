@@ -5,6 +5,7 @@
  */
 package com.example.gomoku_demo.model;
 
+import java.util.Date;
 import lombok.Data;
 
 /**
@@ -15,6 +16,8 @@ import lombok.Data;
 public class ChatMessage {
     private String content;
     private String sender;
+    private String receiver;
+    private Date time;
     private MessageType messageType;
     
     

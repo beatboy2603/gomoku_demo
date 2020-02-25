@@ -6,11 +6,13 @@
                     <span class="card-title center" id="chatRoomTitle">Chat room for <span th:text="${username}"></span></span>
                     <div class='row'>
                         <div class='row col s12' id="chatBoxContent" style='min-height: 300px; max-height: 300px; margin: 20px 0; 
-                             border-top:1px solid #ececec; border-bottom:1px solid #ececec; overflow-y: scroll'>
+                             border-top:1px solid #ececec; border-bottom:1px solid #ececec; overflow-y: scroll;
+                             padding-top: 20px'>
 
                         </div>
                         <div class='col s10'>
-                            <input type="text" id="message" name="message" placeholder="Type something ..."/>
+                            <textarea id="message" class="materialize-textarea" style="max-height: 100px; overflow-y: scroll" 
+                                      placeholder="Type something ..."></textarea>
                         </div>
                         <div class='col s2'>
                             <button class="waves-effect waves-light btn" onclick="send()">
@@ -22,5 +24,41 @@
                 </div>
             </div>
         </div>
+        <div class="container">
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title center" id="p2pChatRoomTitle">Send private chat to</span>
+                    <div class='row'>
+                        <div class='row col s12' id="p2pChatBoxContent" style='min-height: 100px; max-height: 100px; margin: 20px 0; 
+                             border-top:1px solid #ececec; border-bottom:1px solid #ececec; overflow-y: scroll;
+                             padding-top: 20px'>
+                            
+                        </div>
+                        <div class='col s3'>
+                            <input id="p2pReceiver" placeholder="Username"/>
+                        </div>
+                        <div class='col s7'>
+                            <textarea id="p2pMessage" class="materialize-textarea" style="max-height: 100px; overflow-y: scroll" 
+                                      placeholder="Type something ..."></textarea>
+                        </div>
+                        <div class='col s2'>
+                            <button class="waves-effect waves-light btn" onclick="p2pSend()">
+                                Send
+                                <i class="material-icons right">send</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $('#message').keypress((event) => {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    event.preventDefault();
+                    send();
+                }
+            });
+        </script>
     </div>
 </html>

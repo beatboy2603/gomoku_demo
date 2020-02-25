@@ -36,6 +36,22 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     @Autowired
     private SimpMessagingTemplate template;
 
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/chatDemo", "/secured/room").withSockJS();
+//        registry.addEndpoint("/secured/room").withSockJS();
+    }
+
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        registry.enableSimpleBroker("/topic", "/secured/user/queue/specific-user");
+        registry.setApplicationDestinationPrefixes("/api/chat");
+
+//        registry.enableSimpleBroker("/secured/user/queue/specific-user");
+//        registry.setApplicationDestinationPrefixes("/api/p2p-chat");
+        registry.setUserDestinationPrefix("/secured/user");
+    }
+
     @EventListener(SessionConnectedEvent.class)
     public void handleWebsocketConnectedListner(SessionConnectedEvent event) {
     }
@@ -48,17 +64,6 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
         chatMessage.setSender(username);
         chatMessage.setContent(username + " has left the room!");
         chatMessage.setMessageType(ChatMessage.MessageType.LEAVE);
-        this.template.convertAndSend("/room/public", chatMessage);
-    }
-
-    @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/chatDemo").withSockJS();
-    }
-
-    @Override
-    public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/room");
-        registry.setApplicationDestinationPrefixes("/api/chat");
+        this.template.convertAndSend("/topic/public", chatMessage);
     }
 }
