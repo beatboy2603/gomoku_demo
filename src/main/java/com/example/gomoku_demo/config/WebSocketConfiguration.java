@@ -63,16 +63,16 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     }
 
     @EventListener(SessionDisconnectEvent.class)
-    public void handleWebsocketDisconnectListner(SessionDisconnectEvent event, Authentication authentication) {
-        String username = SimpMessageHeaderAccessor.getSessionAttributes(event.getMessage().getHeaders())
-                .get("username").toString();
-        ChatMessage chatMessage = new ChatMessage();
-        userRepository.findById(((CustomUserDetail) authentication.getPrincipal()).getId())
-                .ifPresent(u -> {
-                    chatMessage.setSender(u);
-                    chatMessage.setContent(u.getUsername() + " has left the room!");
-                    chatMessage.setMessageType(ChatMessage.MessageType.LEAVE);
-                    this.template.convertAndSend("/topic/public", chatMessage);
-                });
+    public void handleWebsocketDisconnectListner(SessionDisconnectEvent event) {
+//        String username = SimpMessageHeaderAccessor.getSessionAttributes(event.getMessage().getHeaders())
+//                .get("username").toString();
+//        ChatMessage chatMessage = new ChatMessage();
+//        userRepository.findById(((CustomUserDetail) authentication.getPrincipal()).getId())
+//                .ifPresent(u -> {
+//                    chatMessage.setSender(u);
+//                    chatMessage.setContent(u.getUsername() + " has left the room!");
+//                    chatMessage.setMessageType(ChatMessage.MessageType.LEAVE);
+//                    this.template.convertAndSend("/topic/public", chatMessage);
+//                });
     }
 }
