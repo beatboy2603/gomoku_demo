@@ -7,6 +7,8 @@ package com.example.gomoku_demo.config;
 
 import com.example.gomoku_demo.controller.ChatController;
 import com.example.gomoku_demo.model.ChatMessage;
+import com.example.gomoku_demo.model.CustomUserDetail;
+import com.example.gomoku_demo.repository.UserRepository;
 import java.util.HashMap;
 import javax.servlet.http.HttpSessionEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
@@ -35,6 +38,9 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 
     @Autowired
     private SimpMessagingTemplate template;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -57,13 +63,16 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     }
 
     @EventListener(SessionDisconnectEvent.class)
-    public void handleWebsocketDisconnectListner(SessionDisconnectEvent event) {
+    public void handleWebsocketDisconnectListner(SessionDisconnectEvent event, Authentication authentication) {
         String username = SimpMessageHeaderAccessor.getSessionAttributes(event.getMessage().getHeaders())
                 .get("username").toString();
         ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setSender(username);
-        chatMessage.setContent(username + " has left the room!");
-        chatMessage.setMessageType(ChatMessage.MessageType.LEAVE);
-        this.template.convertAndSend("/topic/public", chatMessage);
+        userRepository.findById(((CustomUserDetail) authentication.getPrincipal()).getId())
+                .ifPresent(u -> {
+                    chatMessage.setSender(u);
+                    chatMessage.setContent(u.getUsername() + " has left the room!");
+                    chatMessage.setMessageType(ChatMessage.MessageType.LEAVE);
+                    this.template.convertAndSend("/topic/public", chatMessage);
+                });
     }
 }

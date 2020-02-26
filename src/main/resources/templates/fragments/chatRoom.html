@@ -51,7 +51,7 @@
                 </div>
             </div>
         </div>
-        <script>
+        <script th:inline="javascript">
             $('#message').keypress((event) => {
                 var keycode = (event.keyCode ? event.keyCode : event.which);
                 if (keycode == '13') {

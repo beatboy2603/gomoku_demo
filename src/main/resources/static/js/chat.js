@@ -1,19 +1,21 @@
 $(document).ready(() => {
-    $('#username').keypress((event) => {
-        var keycode = (event.keyCode ? event.keyCode : event.which);
-        if (keycode == '13') {
-            connectSocket(event);
-        }
-    });
+//    $('#username').keypress((event) => {
+//        var keycode = (event.keyCode ? event.keyCode : event.which);
+//        if (keycode == '13') {
+//            connectSocket(event);
+//        }
+//    });
+    connectSocket();
 });
 
 let stompClient = null;
 let stompClientP2P = null;
-let username = null;
+let receiverId = null;
+//let username = null;
 
-connectSocket = (e) => {
-    e.preventDefault();
-    username = $("#username").val().trim();
+connectSocket = () => {
+//    e.preventDefault();
+//    username = $("#username").val().trim();
     if (username) {
         $("#registerDiv").hide();
         $.ajax({
@@ -23,7 +25,6 @@ connectSocket = (e) => {
             },
             'type': 'POST',
             'url': "chat/registerName",
-            'data': JSON.stringify({username}),
             success: (res) => {
                 $("#publicRoomDiv").html(res);
             },
@@ -44,27 +45,27 @@ connectSocket = (e) => {
 
 onConnected = () => {
     stompClient.subscribe("/topic/public", onMessageReceived);
-    stompClient.send("/api/chat/register", {}, JSON.stringify({sender: username, messageType: "JOIN"}));
+    stompClient.send("/api/chat/register", {}, JSON.stringify({sender: {id: userId}, messageType: "JOIN"}));
 }
 
 onError = () => {
-    alert("error");
+//    alert("error");
 }
 
 onConnectedPrivate = () => {
     stompClientP2P.subscribe('/secured/user/queue/specific-user'
-            + '-user' + username, onPrivateMessageReceived);
+            + '-user' + userId, onPrivateMessageReceived);
 }
 
 onErrorPrivate = () => {
-    alert("error private");
+//    alert("error private");
 }
 
 send = () => {
     let message = $("#message").val().trim();
     if (message && stompClient) {
         let chatMessage = {
-            sender: username,
+            sender: {id: userId},
             content: message,
             messageType: "CHAT",
         }
@@ -80,19 +81,19 @@ onMessageReceived = (payload) => {
     let html = "";
     html += "<div class='row col s12'>";
     if (message.messageType == "CHAT") {
-        if (message.sender == username) {
+        if (message.sender.id == userId) {
             html += "<div class='col s8 offset-s2 txt-bubble-right' style='word-wrap: break-word; text-align:right;'>"
                     + message.content + "</div>";
-            html += "<div class='col s2' dir='rtl'>" + genAva(message.sender) + "</div>";
+            html += "<div class='col s2' dir='rtl'>" + genAva(message.sender.username) + "</div>";
         } else {
-            html += "<div class='col s2'>" + genAva(message.sender) + "</div>";
+            html += "<div class='col s2'>" + genAva(message.sender.username) + "</div>";
             html += "<div class='col s8 txt-bubble-left' style='word-wrap: break-word;'>" + message.content + "</div>";
         }
     } else {
         if (message.messageType == "JOIN") {
-            html += "<div class='center grey-text text-lighten-1'>" + message.sender + " has entered the room!</div>";
+            html += "<div class='center grey-text text-lighten-1'>" + message.sender.username + " has entered the room!</div>";
         } else {
-            html += "<div class='center grey-text text-lighten-1'>" + message.sender + " has left the room!</div>";
+            html += "<div class='center grey-text text-lighten-1'>" + message.sender.username + " has left the room!</div>";
         }
     }
     html += "</div>";
@@ -105,20 +106,37 @@ p2pSend = () => {
     let receiver = $("#p2pReceiver").val().trim();
     if (message && stompClient) {
         let chatMessage = {
-            sender: username,
+            sender: {id: userId},
             content: message,
             receiver: receiver,
             messageType: "CHAT",
         }
-        stompClient.send("/api/chat/secured/room-"+receiver, {}, JSON.stringify(chatMessage));
+        stompClient.send("/api/chat/secured/room-" + receiver, {}, JSON.stringify(chatMessage));
         $("#p2pMessage").val('');
         $("#p2pMessage").height("10px");
+        let html = "";
+        html += "<div class='row col s12'>";
+        html += "<div class='col s8 offset-s2 txt-bubble-right' style='word-wrap: break-word; text-align:right;'>"
+                + message + "</div>";
+        html += "<div class='col s2' dir='rtl'>" + genAva(username) + "</div>";
+        html += "</div>";
+        $("#p2pChatBoxContent").append(html);
+        $("#p2pChatBoxContent").scrollTop(document.getElementById("p2pChatBoxContent").scrollHeight);
     }
 }
 
 onPrivateMessageReceived = (payload) => {
     let message = JSON.parse(payload.body);
-    console.log("testp2p" + message);
+    let html = "";
+    html += "<div class='row col s12'>";
+
+    html += "<div class='col s2'>" + genAva(message.sender) + "</div>";
+    html += "<div class='col s8 txt-bubble-left' style='word-wrap: break-word;'>" + message.content + "</div>";
+
+
+    html += "</div>";
+    $("#p2pChatBoxContent").append(html);
+    $("#p2pChatBoxContent").scrollTop(document.getElementById("p2pChatBoxContent").scrollHeight);
 }
 
 genAva = (name) => {
@@ -128,3 +146,9 @@ genAva = (name) => {
     ava += "</div>";
     return ava;
 }
+
+setReceiver = (receiver) => {
+    $("#p2pReceiver").val(receiver);
+//    receiverId = 
+}
+
