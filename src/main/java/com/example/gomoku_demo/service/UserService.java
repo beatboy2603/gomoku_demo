@@ -1,5 +1,8 @@
 package com.example.gomoku_demo.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,6 +28,16 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
         return new CustomUserDetail(user);
+	}
+	
+	public User register(User user) {
+		return userRepository.save(user);
+	}
+	
+	public List<User> findAll() {
+		List<User> users = new ArrayList<>();
+		users = userRepository.findAll();
+		return users;
 	}
 
 }
