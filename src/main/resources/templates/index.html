@@ -5,12 +5,23 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+<head>
+<title>TODO supply a title</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+	<form th:action="@{/register}" th:object="${user}" method="post">
+		<p>
+			username: <input type="text" th:field="*{username}" />
+		</p>
+		<p>
+			password: <input type="text" th:field="*{password}" />
+		</p>
+		<p>
+			<button type="submit" class="btn btn-success">Register</button>
+		</p>
+	</form>
+
+</body>
 </html>

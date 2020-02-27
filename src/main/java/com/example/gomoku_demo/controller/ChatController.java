@@ -8,6 +8,7 @@ package com.example.gomoku_demo.controller;
 import com.example.gomoku_demo.model.ChatMessage;
 import com.example.gomoku_demo.model.CustomUserDetail;
 import com.example.gomoku_demo.model.User;
+import com.example.gomoku_demo.repository.ChatRepository;
 import com.example.gomoku_demo.repository.UserRepository;
 import java.security.Principal;
 import java.util.Date;
@@ -42,13 +43,16 @@ import org.springframework.web.context.request.RequestContextHolder;
  */
 @Controller
 public class ChatController {
-    
+
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
-    
+
     @Autowired
     private UserRepository userRepository;
-    
+
+    @Autowired
+    private ChatRepository chatRepository;
+
     @GetMapping("/chat")
     public String goToChat(Model model, Authentication authentication) {
         model.addAttribute("username", authentication.getName());
@@ -56,41 +60,49 @@ public class ChatController {
         model.addAttribute("userId", userId);
         model.addAttribute("friendList", userRepository.findAll()
                 .stream()
-                .filter(u -> u.getId() != userId)
+                .filter(u -> !u.getId().equals(userId))
                 .collect(Collectors.toList()));
+        model.addAttribute("friendsWithNewMessages", userRepository.getUsersWithNewMessages(userId));
         return "chat";
     }
-    
+
     @PostMapping("/chat/registerName")
     public String registerName(Model model, Authentication authentication) {
         model.addAttribute("username", authentication.getName());
         return "fragments/chatRoom :: publicRoom";
     }
-    
+
     @MessageMapping("register")
     @SendTo("/topic/public")
     public ChatMessage register(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor,
             Authentication authentication) {
         headerAccessor.getSessionAttributes().put("username", authentication.getName());
         chatMessage.setTime(new Date());
+//        chatMessage = chatRepository.saveAndFlush(chatMessage);
+        chatMessage.setSender(userRepository.findUserById(chatMessage.getSender().getId()));
         return chatMessage;
     }
-    
+
     @MessageMapping("send")
     @SendTo("/topic/public")
     public ChatMessage sendPublicMessage(@Payload ChatMessage chatMessage) {
         chatMessage.setTime(new Date());
+//        chatMessage = chatRepository.saveAndFlush(chatMessage);
+        chatMessage.setSender(userRepository.findUserById(chatMessage.getSender().getId()));
         return chatMessage;
     }
-    
-    @MessageMapping("/secured/room-{username}")
-    @SendTo("/secured/user/queue/specific-user-user{username}")
+
+    @MessageMapping("/secured/room-{userId}")
+    @SendTo("/secured/user/queue/specific-user-user{userId}")
     public ChatMessage sendSpecific(
-            @DestinationVariable String username,
+            @DestinationVariable String userId,
             @Payload ChatMessage chatMessage,
             Principal user,
             @Header("simpSessionId") String sessionId) throws Exception {
         chatMessage.setTime(new Date());
+        chatMessage = chatRepository.saveAndFlush(chatMessage);
+        chatMessage.setSender(userRepository.findUserById(chatMessage.getSender().getId()));
+        chatMessage.setReceiver(userRepository.findUserById(chatMessage.getReceiver().getId()));
         return chatMessage;
     }
 }

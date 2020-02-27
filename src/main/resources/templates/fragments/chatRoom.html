@@ -1,11 +1,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <div th:fragment="publicRoom">
-        <div class="container">
+        <div class="">
             <div class="card">
                 <div class="card-content">
                     <span class="card-title center" id="chatRoomTitle">Chat room for <span th:text="${username}"></span></span>
                     <div class='row'>
-                        <div class='row col s12' id="chatBoxContent" style='min-height: 300px; max-height: 300px; margin: 20px 0; 
+                        <div class='row col s12' id="chatBoxContent" style='min-height: 250px; max-height: 250px; margin: 20px 0; 
                              border-top:1px solid #ececec; border-bottom:1px solid #ececec; overflow-y: scroll;
                              padding-top: 20px'>
 
@@ -24,20 +24,20 @@
                 </div>
             </div>
         </div>
-        <div class="container">
+        <div class="">
             <div class="card">
                 <div class="card-content">
-                    <span class="card-title center" id="p2pChatRoomTitle">Send private chat to</span>
+                    <span class="card-title center" id="p2pChatRoomTitle">Send private chat to <span id='receiverName'></span></span>
                     <div class='row'>
-                        <div class='row col s12' id="p2pChatBoxContent" style='min-height: 100px; max-height: 100px; margin: 20px 0; 
+                        <div class='row col s12' id="p2pChatBoxContent" style='min-height: 250px; max-height: 250px; margin: 20px 0; 
                              border-top:1px solid #ececec; border-bottom:1px solid #ececec; overflow-y: scroll;
                              padding-top: 20px'>
                             
                         </div>
-                        <div class='col s3'>
+<!--                        <div class='col s3'>
                             <input id="p2pReceiver" placeholder="Username"/>
-                        </div>
-                        <div class='col s7'>
+                        </div>-->
+                        <div class='col s10'>
                             <textarea id="p2pMessage" class="materialize-textarea" style="max-height: 100px; overflow-y: scroll" 
                                       placeholder="Type something ..."></textarea>
                         </div>
@@ -57,6 +57,13 @@
                 if (keycode == '13') {
                     event.preventDefault();
                     send();
+                }
+            });
+            $('#p2pMessage').keypress((event) => {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    event.preventDefault();
+                    p2pSend();
                 }
             });
         </script>

@@ -1,12 +1,17 @@
 $(document).ready(() => {
-//    $('#username').keypress((event) => {
-//        var keycode = (event.keyCode ? event.keyCode : event.which);
-//        if (keycode == '13') {
-//            connectSocket(event);
-//        }
-//    });
     connectSocket();
+    friendsWithNewMessages.map(el => {
+        setNewMessAlert(el.id);
+    })
 });
+
+setNewMessAlert = (id) => {
+    $("#friend" + id).addClass("newMess");
+}
+
+unsetNewMessAlert = (id) => {
+    $("#friend" + id).removeClass("newMess");
+}
 
 let stompClient = null;
 let stompClientP2P = null;
@@ -81,13 +86,15 @@ onMessageReceived = (payload) => {
     let html = "";
     html += "<div class='row col s12'>";
     if (message.messageType == "CHAT") {
-        if (message.sender.id == userId) {
-            html += "<div class='col s8 offset-s2 txt-bubble-right' style='word-wrap: break-word; text-align:right;'>"
-                    + message.content + "</div>";
-            html += "<div class='col s2' dir='rtl'>" + genAva(message.sender.username) + "</div>";
-        } else {
-            html += "<div class='col s2'>" + genAva(message.sender.username) + "</div>";
-            html += "<div class='col s8 txt-bubble-left' style='word-wrap: break-word;'>" + message.content + "</div>";
+        if (message.content) {
+            if (message.sender.id == userId) {
+                html += "<div class='col s8 offset-s2 txt-bubble-right' style='word-wrap: break-word; text-align:right;'>"
+                        + message.content + "</div>";
+                html += "<div class='col s2' dir='rtl'>" + genAva(message.sender.username) + "</div>";
+            } else {
+                html += "<div class='col s2'>" + genAva(message.sender.username) + "</div>";
+                html += "<div class='col s8 txt-bubble-left' style='word-wrap: break-word;'>" + message.content + "</div>";
+            }
         }
     } else {
         if (message.messageType == "JOIN") {
@@ -103,39 +110,52 @@ onMessageReceived = (payload) => {
 
 p2pSend = () => {
     let message = $("#p2pMessage").val().trim();
-    let receiver = $("#p2pReceiver").val().trim();
+    if (!receiverId) {
+        alert("Hãy chọn 1 người bạn");
+        return;
+    }
+//    let receiver = $("#p2pReceiver").val().trim();
     if (message && stompClient) {
         let chatMessage = {
             sender: {id: userId},
             content: message,
-            receiver: receiver,
+            receiver: {id: receiverId},
             messageType: "CHAT",
         }
-        stompClient.send("/api/chat/secured/room-" + receiver, {}, JSON.stringify(chatMessage));
+        stompClient.send("/api/chat/secured/room-" + receiverId, {}, JSON.stringify(chatMessage));
         $("#p2pMessage").val('');
         $("#p2pMessage").height("10px");
-        let html = "";
-        html += "<div class='row col s12'>";
-        html += "<div class='col s8 offset-s2 txt-bubble-right' style='word-wrap: break-word; text-align:right;'>"
-                + message + "</div>";
-        html += "<div class='col s2' dir='rtl'>" + genAva(username) + "</div>";
-        html += "</div>";
-        $("#p2pChatBoxContent").append(html);
+        if (message) {
+            let html = "";
+            html += "<div class='row col s12'>";
+            html += "<div class='col s8 offset-s2 txt-bubble-right' style='word-wrap: break-word; text-align:right;'>"
+                    + message + "</div>";
+            html += "<div class='col s2' dir='rtl'>" + genAva(username) + "</div>";
+            html += "</div>";
+            $("#p2pChatBoxContent").append(html);
+        }
         $("#p2pChatBoxContent").scrollTop(document.getElementById("p2pChatBoxContent").scrollHeight);
     }
 }
 
 onPrivateMessageReceived = (payload) => {
     let message = JSON.parse(payload.body);
-    let html = "";
-    html += "<div class='row col s12'>";
+    if (receiverId) {
+        if (receiverId == message.receiver.id) {
+            if (message.content) {
+                let html = "";
+                html += "<div class='row col s12'>";
 
-    html += "<div class='col s2'>" + genAva(message.sender) + "</div>";
-    html += "<div class='col s8 txt-bubble-left' style='word-wrap: break-word;'>" + message.content + "</div>";
+                html += "<div class='col s2'>" + genAva(message.sender.username) + "</div>";
+                html += "<div class='col s8 txt-bubble-left' style='word-wrap: break-word;'>" + message.content + "</div>";
+                html += "</div>";
+                $("#p2pChatBoxContent").append(html);
+            }
+        } else {
+            setNewMessAlert(message.receiver.id);
+        }
+    }
 
-
-    html += "</div>";
-    $("#p2pChatBoxContent").append(html);
     $("#p2pChatBoxContent").scrollTop(document.getElementById("p2pChatBoxContent").scrollHeight);
 }
 
@@ -147,8 +167,53 @@ genAva = (name) => {
     return ava;
 }
 
-setReceiver = (receiver) => {
-    $("#p2pReceiver").val(receiver);
-//    receiverId = 
+setReceiver = (id, name) => {
+    receiverId = id;
+    $("#receiverName").html(name);
+    unsetNewMessAlert(receiverId);
+    $.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        'type': 'POST',
+        'url': "api/chat/getPrivateMessages/" + userId + "/" + receiverId,
+        success: (res) => {
+            let chatMessages = res;
+            console.log(res);
+            $("#p2pChatBoxContent").html("");
+            chatMessages.map(el => {
+                if (el.sender.id == userId) {
+                    if (el.content) {
+                        let html = "";
+                        html += "<div class='row col s12' title='" + el.time + "'>";
+                        html += "<div class='col s8 offset-s2 txt-bubble-right' style='word-wrap: break-word; text-align:right;'>"
+                                + el.content + "</div>";
+                        html += "<div class='col s2' dir='rtl'>" + genAva(el.sender.username) + "</div>";
+                        html += "</div>";
+                        $("#p2pChatBoxContent").append(html);
+                    }
+                } else {
+                    if (el.content) {
+                        let html = "";
+                        html += "<div class='row col s12' title='" + el.time + "'>";
+
+                        html += "<div class='col s2'>" + genAva(el.sender.username) + "</div>";
+                        html += "<div class='col s8 txt-bubble-left' style='word-wrap: break-word;'>" + el.content + "</div>";
+
+                        html += "</div>";
+                        $("#p2pChatBoxContent").append(html);
+                    }
+                }
+                $("#p2pChatBoxContent").scrollTop(document.getElementById("p2pChatBoxContent").scrollHeight);
+            })
+        },
+        error: (res) => {
+            console.log("error");
+        }
+    })
 }
 
+doSomething = (test) => {
+    console.log("------------------------ ", test);
+}

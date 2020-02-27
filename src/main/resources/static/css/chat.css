@@ -1,6 +1,23 @@
+.friend {
+    border-top: 1px solid #ececec;
+    padding: 5px 0 0 5px;
+}
+
+.friend:hover {
+    font-weight: bold;
+    cursor: pointer;
+    color: cornflowerblue;
+}
+
+.newMess::after{
+    content: "!";
+    color: red;
+    font-weight: bold;
+}
+
 .txt-bubble-right {
     position: relative;
-    background: #80ff80;
+    background: lightskyblue;
     border-radius: .4em;
     padding: 10px !important;
     min-height: 50px !important;
@@ -14,7 +31,7 @@
     width: 0;
     height: 0;
     border: 9px solid transparent;
-    border-left-color: #80ff80;
+    border-left-color: lightskyblue;
     border-right: 0;
     margin-top: -9px;
     margin-right: -9px;
@@ -22,7 +39,7 @@
 
 .txt-bubble-left {
     position: relative;
-    background: #ffb74d;
+    background: #80ff80;
     border-radius: .4em;
     padding: 10px !important;
     min-height: 50px !important;
@@ -36,7 +53,7 @@
     width: 0;
     height: 0;
     border: 9px solid transparent;
-    border-right-color: #ffb74d;
+    border-right-color: #80ff80;
     border-left: 0;
     margin-top: -9px;
     margin-left: -9px;

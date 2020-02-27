@@ -6,12 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class FriendController {
-	
-	
-	
-	
-	@GetMapping("/addFriend")
-	public String addFriend() {
-		return "friend_request";
-	}
+
+    @GetMapping("/addFriend")
+    public String addFriend() {
+        return "friend_request";
+    }
 }

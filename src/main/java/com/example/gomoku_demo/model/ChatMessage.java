@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,24 +25,26 @@ import lombok.Data;
  * @author ADMIN
  */
 @Data
-//@Entity
+@Entity
 @Table
 public class ChatMessage {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String content;
-    @ManyToOne
-    @JoinColumn(name="id", table="user")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "sender_id")
     private User sender;
-    @ManyToOne
-    @JoinColumn(name="id", table="user")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "receiver_id")
     private User receiver;
     private Date time;
     private MessageType messageType;
-    
-    public enum MessageType{
+    private Boolean hasRead;
+
+    public enum MessageType {
         CHAT, JOIN, LEAVE
     }
 }
