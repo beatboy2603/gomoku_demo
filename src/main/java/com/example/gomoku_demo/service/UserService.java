@@ -34,9 +34,9 @@ public class UserService implements UserDetailsService {
 		return userRepository.save(user);
 	}
 	
-	public List<User> findAll() {
+	public List<User> findFriends(Long userId) {
 		List<User> users = new ArrayList<>();
-		users = userRepository.findAll();
+		users = userRepository.findFriends(userId);
 		return users;
 	}
 
