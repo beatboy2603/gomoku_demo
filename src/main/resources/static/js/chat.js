@@ -2,7 +2,8 @@ $(document).ready(() => {
     connectSocket();
     friendsWithNewMessages.map(el => {
         setNewMessAlert(el.id);
-    })
+    });
+    setUsersNoti();
 });
 
 setNewMessAlert = (id) => {
@@ -98,14 +99,25 @@ onMessageReceived = (payload) => {
         }
     } else {
         if (message.messageType == "JOIN") {
+            setUsersNoti();
             html += "<div class='center grey-text text-lighten-1'>" + message.sender.username + " has entered the room!</div>";
         } else {
+            setUsersNoti();
             html += "<div class='center grey-text text-lighten-1'>" + message.sender.username + " has left the room!</div>";
         }
     }
     html += "</div>";
     $("#chatBoxContent").append(html);
     $("#chatBoxContent").scrollTop(document.getElementById("chatBoxContent").scrollHeight);
+}
+
+setUsersNoti = () => {
+    $.get("api/chat/getPublicUsers", (res) => {
+        let html = "<i class='material-icons icon'>people</i>";
+        html += "<div class='noti'><span class='noti-content'>" + res.length + "</span></div>";
+        $("#usersNoti").html(html);
+    });
+
 }
 
 p2pSend = () => {
@@ -140,19 +152,20 @@ p2pSend = () => {
 
 onPrivateMessageReceived = (payload) => {
     let message = JSON.parse(payload.body);
-    if (receiverId) {
-        if (receiverId == message.receiver.id) {
-            if (message.content) {
-                let html = "";
-                html += "<div class='row col s12'>";
 
-                html += "<div class='col s2'>" + genAva(message.sender.username) + "</div>";
-                html += "<div class='col s8 txt-bubble-left' style='word-wrap: break-word;'>" + message.content + "</div>";
-                html += "</div>";
-                $("#p2pChatBoxContent").append(html);
-            }
-        } else {
-            setNewMessAlert(message.receiver.id);
+    if (receiverId && receiverId == message.sender.id) {
+        if (message.content) {
+            let html = "";
+            html += "<div class='row col s12'>";
+
+            html += "<div class='col s2'>" + genAva(message.sender.username) + "</div>";
+            html += "<div class='col s8 txt-bubble-left' style='word-wrap: break-word;'>" + message.content + "</div>";
+            html += "</div>";
+            $("#p2pChatBoxContent").append(html);
+        }
+    } else {
+        if (message.sender.id) {
+            setNewMessAlert(message.sender.id);
         }
     }
 
@@ -170,7 +183,6 @@ genAva = (name) => {
 setReceiver = (id, name) => {
     receiverId = id;
     $("#receiverName").html(name);
-    unsetNewMessAlert(receiverId);
     $.ajax({
         headers: {
             'Accept': 'application/json',
@@ -179,6 +191,7 @@ setReceiver = (id, name) => {
         'type': 'POST',
         'url': "api/chat/getPrivateMessages/" + userId + "/" + receiverId,
         success: (res) => {
+            unsetNewMessAlert(receiverId);
             let chatMessages = res;
             console.log(res);
             $("#p2pChatBoxContent").html("");

@@ -5,11 +5,13 @@
  */
 package com.example.gomoku_demo.controller;
 
+import com.example.gomoku_demo.config.WebSocketConfiguration;
 import com.example.gomoku_demo.model.ChatMessage;
 import com.example.gomoku_demo.model.CustomUserDetail;
 import com.example.gomoku_demo.model.User;
 import com.example.gomoku_demo.repository.ChatRepository;
 import com.example.gomoku_demo.repository.UserRepository;
+import com.example.gomoku_demo.service.ChatService;
 import java.security.Principal;
 import java.util.Date;
 import java.util.HashMap;
@@ -76,11 +78,16 @@ public class ChatController {
     @SendTo("/topic/public")
     public ChatMessage register(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor,
             Authentication authentication) {
-        headerAccessor.getSessionAttributes().put("username", authentication.getName());
-        chatMessage.setTime(new Date());
-//        chatMessage = chatRepository.saveAndFlush(chatMessage);
-        chatMessage.setSender(userRepository.findUserById(chatMessage.getSender().getId()));
-        return chatMessage;
+        User newUser = userRepository.findUserById(chatMessage.getSender().getId());
+        if (ChatRestController.connectedUsers.contains(newUser)) {
+            return null;
+        } else {
+            headerAccessor.getSessionAttributes().put("username", authentication.getName());
+            chatMessage.setTime(new Date());
+            chatMessage.setSender(newUser);
+            ChatRestController.connectedUsers.add(newUser);
+            return chatMessage;
+        }
     }
 
     @MessageMapping("send")

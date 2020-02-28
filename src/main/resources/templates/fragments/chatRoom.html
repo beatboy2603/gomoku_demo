@@ -3,7 +3,10 @@
         <div class="">
             <div class="card">
                 <div class="card-content">
-                    <span class="card-title center" id="chatRoomTitle">Chat room for <span th:text="${username}"></span></span>
+                    <span class="card-title center" id="chatRoomTitle">
+                        Chat room for <span th:text="${username}"></span> <span id="usersNoti"></span>
+                            
+                    </span>
                     <div class='row'>
                         <div class='row col s12' id="chatBoxContent" style='min-height: 250px; max-height: 250px; margin: 20px 0; 
                              border-top:1px solid #ececec; border-bottom:1px solid #ececec; overflow-y: scroll;

@@ -9,6 +9,30 @@
     color: cornflowerblue;
 }
 
+.icon{
+    position:relative;
+    top: 5px;
+}
+
+.noti{
+    border: 1px red solid;
+    background: red;
+    border-radius: 50%;
+    height: 15px;
+    min-width: 15px;
+    display: inline-block;
+    position: relative;
+    left: -5px;
+}
+
+.noti-content{
+    font-size:10px;
+    position: relative;
+    top: -16px;
+    color: white;
+    font-weight: bold;
+}
+
 .newMess::after{
     content: "!";
     color: red;
