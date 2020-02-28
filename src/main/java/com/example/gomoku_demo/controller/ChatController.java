@@ -6,6 +6,8 @@
 package com.example.gomoku_demo.controller;
 
 import com.example.gomoku_demo.config.WebSocketConfiguration;
+import com.example.gomoku_demo.dto.ChatMessageDTO;
+import com.example.gomoku_demo.dto.UserDTO;
 import com.example.gomoku_demo.model.ChatMessage;
 import com.example.gomoku_demo.model.CustomUserDetail;
 import com.example.gomoku_demo.model.User;
@@ -20,6 +22,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
@@ -55,6 +59,9 @@ public class ChatController {
     @Autowired
     private ChatRepository chatRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @GetMapping("/chat")
     public String goToChat(Model model, Authentication authentication) {
         model.addAttribute("username", authentication.getName());
@@ -63,8 +70,12 @@ public class ChatController {
         model.addAttribute("friendList", userRepository.findAll()
                 .stream()
                 .filter(u -> !u.getId().equals(userId))
+                .map(source -> modelMapper.map(source, UserDTO.class))
                 .collect(Collectors.toList()));
-        model.addAttribute("friendsWithNewMessages", userRepository.getUsersWithNewMessages(userId));
+        model.addAttribute("friendsWithNewMessages", userRepository.getUsersWithNewMessages(userId)
+                .stream()
+                .map(source -> modelMapper.map(source, UserDTO.class))
+                .collect(Collectors.toList()));
         return "chat";
     }
 
@@ -76,7 +87,7 @@ public class ChatController {
 
     @MessageMapping("register")
     @SendTo("/topic/public")
-    public ChatMessage register(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor,
+    public ChatMessageDTO register(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor,
             Authentication authentication) {
         User newUser = userRepository.findUserById(chatMessage.getSender().getId());
         if (ChatRestController.connectedUsers.contains(newUser)) {
@@ -86,22 +97,24 @@ public class ChatController {
             chatMessage.setTime(new Date());
             chatMessage.setSender(newUser);
             ChatRestController.connectedUsers.add(newUser);
-            return chatMessage;
+            modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+            return modelMapper.map(chatMessage, ChatMessageDTO.class);
         }
     }
 
     @MessageMapping("send")
     @SendTo("/topic/public")
-    public ChatMessage sendPublicMessage(@Payload ChatMessage chatMessage) {
+    public ChatMessageDTO sendPublicMessage(@Payload ChatMessage chatMessage) {
         chatMessage.setTime(new Date());
 //        chatMessage = chatRepository.saveAndFlush(chatMessage);
         chatMessage.setSender(userRepository.findUserById(chatMessage.getSender().getId()));
-        return chatMessage;
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+        return modelMapper.map(chatMessage, ChatMessageDTO.class);
     }
 
     @MessageMapping("/secured/room-{userId}")
     @SendTo("/secured/user/queue/specific-user-user{userId}")
-    public ChatMessage sendSpecific(
+    public ChatMessageDTO sendSpecific(
             @DestinationVariable String userId,
             @Payload ChatMessage chatMessage,
             Principal user,
@@ -110,6 +123,7 @@ public class ChatController {
         chatMessage = chatRepository.saveAndFlush(chatMessage);
         chatMessage.setSender(userRepository.findUserById(chatMessage.getSender().getId()));
         chatMessage.setReceiver(userRepository.findUserById(chatMessage.getReceiver().getId()));
-        return chatMessage;
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+        return modelMapper.map(chatMessage, ChatMessageDTO.class);
     }
 }

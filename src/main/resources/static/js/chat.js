@@ -226,7 +226,3 @@ setReceiver = (id, name) => {
         }
     })
 }
-
-doSomething = (test) => {
-    console.log("------------------------ ", test);
-}

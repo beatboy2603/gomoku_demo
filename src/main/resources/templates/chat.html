@@ -40,7 +40,7 @@ and open the template in the editor.
 
             </div>
             <div id="friendList" class="col s2 card" style='position: sticky; top: 5px'>
-                <span class="card-title center">Friend list</span>
+                <span class="card-title center" th:text="#{demo.chat.friendList}">Friend list</span>
                 <ul th:each="friend, iStat: ${friendList}">
                     <li th:id="'friend'+*{friend.getId()}" th:text="*{friend.getUsername()}" class='friend' 
                         th:onclick="setReceiver([[*{friend.getId()}]],[[*{friend.getUsername()}]])">

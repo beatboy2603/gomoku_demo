@@ -4,7 +4,7 @@
             <div class="card">
                 <div class="card-content">
                     <span class="card-title center" id="chatRoomTitle">
-                        Chat room for <span th:text="${username}"></span> <span id="usersNoti"></span>
+                        <span th:text="#{demo.chat.publicRoom}">Public chat room for</span> <span th:text="${username}"></span> <span id="usersNoti"></span>
                             
                     </span>
                     <div class='row'>
@@ -15,11 +15,11 @@
                         </div>
                         <div class='col s10'>
                             <textarea id="message" class="materialize-textarea" style="max-height: 100px; overflow-y: scroll" 
-                                      placeholder="Type something ..."></textarea>
+                                      th:attr="placeholder=#{demo.chat.chatPlaceholder}"></textarea>
                         </div>
                         <div class='col s2'>
                             <button class="waves-effect waves-light btn" onclick="send()">
-                                Send
+                                <span th:text="#{demo.chat.send}">Send</span>
                                 <i class="material-icons right">send</i>
                             </button>
                         </div>
@@ -30,7 +30,7 @@
         <div class="">
             <div class="card">
                 <div class="card-content">
-                    <span class="card-title center" id="p2pChatRoomTitle">Send private chat to <span id='receiverName'></span></span>
+                    <span class="card-title center" id="p2pChatRoomTitle"><span th:text="#{demo.chat.privateRoom}">Send private message to</span> <span id='receiverName'></span></span>
                     <div class='row'>
                         <div class='row col s12' id="p2pChatBoxContent" style='min-height: 250px; max-height: 250px; margin: 20px 0; 
                              border-top:1px solid #ececec; border-bottom:1px solid #ececec; overflow-y: scroll;
@@ -42,11 +42,11 @@
                         </div>-->
                         <div class='col s10'>
                             <textarea id="p2pMessage" class="materialize-textarea" style="max-height: 100px; overflow-y: scroll" 
-                                      placeholder="Type something ..."></textarea>
+                                      th:attr="placeholder=#{demo.chat.chatPlaceholder}"></textarea>
                         </div>
                         <div class='col s2'>
                             <button class="waves-effect waves-light btn" onclick="p2pSend()">
-                                Send
+                                <span th:text="#{demo.chat.send}">Send</span>
                                 <i class="material-icons right">send</i>
                             </button>
                         </div>
