@@ -31,7 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeRequests().antMatchers("/", "/home", "/register").permitAll().anyRequest().authenticated().and().formLogin()
+		http.csrf().disable().authorizeRequests().antMatchers("/", "/home", "/register", "/login1").permitAll().anyRequest().authenticated().and().formLogin()
 				.defaultSuccessUrl("/chat").permitAll().and().logout().permitAll();
 	}
 	

@@ -29,6 +29,11 @@ public class AuthenticationController {
 	public String homepage() {
 		return "home";
 	}
+	
+	@GetMapping("/login1")
+	public String login1() {
+		return "login";
+	}
 
 	@GetMapping("/register")
 	public String index(Model model) {

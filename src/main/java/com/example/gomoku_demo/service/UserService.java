@@ -38,7 +38,6 @@ public class UserService implements UserDetailsService {
         }
         return new CustomUserDetail(user);
 	}
-	
 //	public User register(User user) {
 //		return userRepository.save(user);
 //	}
