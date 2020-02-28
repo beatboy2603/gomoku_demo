@@ -2,6 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>Hello</title>
+<script src="https://code.jquery.com/jquery-3.4.1.js"
+	integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+	crossorigin="anonymous"></script>
 </head>
 <body>
 	<h1>Danh sách người dùng</h1>
@@ -11,5 +14,18 @@
 			<button onclick="request()">Them ban</button></li>
 		
 	</ul>
+	<script type="text/javascript">
+	$.ajax({
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+		},
+		'type': 'POST',
+		'url': "abc.casmfasf",
+		success: (res) => {
+			
+		}
+	})
+	</script>
 </body>
 </html>

@@ -40,11 +40,11 @@ public class AuthenticationController {
 	public String register(@ModelAttribute @Valid User user, BindingResult bindingResult) {
 		System.out.println(user.getPassword() + "1");
 		if (bindingResult.hasErrors()) {
-			return "error";
+			return "index";
 		} else {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
 			System.out.println("|| " + user.getUsername() + " || " + user.getPassword());
-			return Optional.ofNullable(userService.register(user)).map(u -> "hoicham").orElse("home");
+			return Optional.ofNullable(userService.register(user)).map(u -> "redirect:/login").orElse("home");
 		}
 	}
 

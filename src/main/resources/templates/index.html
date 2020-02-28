@@ -4,24 +4,64 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>TODO supply a title</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.4.1.js"
+	integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+	crossorigin="anonymous"></script>
 </head>
 <body>
 	<form th:action="@{/register}" th:object="${user}" method="post">
 		<p>
-			username: <input type="text" th:field="*{username}" />
+			username: <input id="username" type="text" th:field="*{username}" />
 		</p>
+		<span th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error</span>
 		<p>
-			password: <input type="text" th:field="*{password}" />
+			password: <input type="password" th:field="*{password}" />
 		</p>
+		<span th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</span>
+
 		<p>
 			<button type="submit" class="btn btn-success">Register</button>
 		</p>
 	</form>
+	<!-- <div class="row container">
+		<form class="col s12">
+			<div class="row center">
+				<div class="input-field col s6 offset-s3">
+					<input id="first_name" type="text" class="validate"> <label
+						for="first_name">First Name</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="input-field col s6 offset-s3">
+					<input id="password" type="password" class="validate"> <label
+						for="password">Password</label>
+				</div>
+			</div>
+			<button class="btn waves-effect waves-light" type="submit"
+				name="action">
+				Submit
+			</button>
+			
+		</form>
+	</div> -->
+	<script type="text/javascript">
+	$('#username').keypress((event) => {
+		var keycode = (event.keyCode ? event.keyCode : event.which);
+		if(keycode == '32') {
+			event.preventDefault();
+		}
+	})
+	</script>
 
 </body>
 </html>
