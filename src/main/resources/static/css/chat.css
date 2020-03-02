@@ -1,3 +1,27 @@
+#bananaDiv {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 100%; 
+    width: 100%; 
+    z-index: 2;
+    /*pointer-events:none;*/
+}
+
+.dropAndFade {
+    animation-name: dropAndFade;
+    animation-duration: 5s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-in;
+}
+
+@keyframes dropAndFade {
+    /*to {top: calc(100vh - 50px);}*/
+    10% {top: calc(100vh - 50px);}
+    90% {top: calc(100vh - 50px); opacity: 1;}
+    100% {top: calc(100vh - 50px); opacity: 0;}
+}
+
 .friend {
     border-top: 1px solid #ececec;
     padding: 5px 0 0 5px;

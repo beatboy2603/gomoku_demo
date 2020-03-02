@@ -4,7 +4,51 @@ $(document).ready(() => {
         setNewMessAlert(el.id);
     });
     setUsersNoti();
+    $(document).mousedown((event) => {
+        countClick++;
+        if (countClick == 1) {
+            initialClick = new Date();
+        }
+        if (countClick >= 5) {
+            countClick = 0;
+            lastClick = new Date();
+            let diff = lastClick - initialClick;
+            if (diff <= 1000) {
+                let x = event.clientX - 25;
+                let y = event.clientY - 25;
+                let html = "<img id='banana' class='dropAndFade' src='banana.gif' onload='onBananaLoad()' style='position: relative; top: " + y + "px; left: " + x + "px;' height='50' width='50'/>";
+                $("#bananaDiv").html(html);
+            }
+        }
+    });
 });
+
+onBananaLoad = () => {
+    setTimeout(() => {
+        $("#banana").removeClass('dropAndFade');
+        $("#banana").css('top', "calc(100vh - 50px)");
+        $("#banana").draggable({
+            scroll: false,
+            axis: "x,y",
+            containment: "#bananaDiv",
+            revert: false,
+            helper: "orginal",
+            disable: false,
+            start: function (event, ui) {
+                $("#banana").removeClass('dropAndFade');
+            },
+            drag: function (event, ui) {
+            },
+            stop: function (event, ui) {
+                $("#banana").addClass('dropAndFade');
+            }
+        });
+    }, 500)
+}
+
+let initialClick = 0;
+let lastClick = 0;
+let countClick = 0;
 
 setNewMessAlert = (id) => {
     $("#friend" + id).addClass("newMess");
