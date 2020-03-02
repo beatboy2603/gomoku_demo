@@ -1,48 +1,80 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-<title>Login</title>
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Login</title>
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
-<script src="https://code.jquery.com/jquery-3.4.1.js"
-	integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-	crossorigin="anonymous"></script>
-</head>
-<body class="orange lighten-2">
-	<div class="container">
-		<div class="row container">
-			<div class="card">
-				<form th:action="@{/login1}" method="post" th:object="${account}">
-					<div class="card-content">
-						<span th:text="Login" class="card-title center"></span>
-					</div>
-					<div class="card-content">
-						<div>
-							<input th:attr="placeholder='User name'" id="username"
-								th:field="*{username}" type="text" class="validate"> <span
-								class="red-text text-darken-1"
-								th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error</span>
-						</div>
-					</div>
-					<div class="card-content">
-						<div>
-							<input th:attr="placeholder='Password'" id="password"
-								th:field="*{password}" type="password" class="validate"><span
-								class="red-text text-darken-1"
-								th:if="${#fields.hasErrors('password')}"
-								th:errors="*{password} ">Error</span>
-						</div>
-					</div>
-					<div class="card-action center">
-						<button th:text="Login" class="btn waves-effect waves-light"
-							type="submit" name="action"></button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-</body>
+        <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+        crossorigin="anonymous"></script>
+    </head>
+    <body class="orange lighten-2">
+        <div class="container">
+            <div class="row container">
+                <div class="card">
+                    <form id='loginForm' th:action="@{/login}" method="post">
+                        <div class="card-content">
+                            <span th:text="Login" class="card-title center"></span>
+                        </div>
+
+                        <div class="card-content">
+                            <div>
+                                <input th:attr="placeholder='User name'" id="username"
+                                       name="username" type="text" class="validate">
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div>
+                                <input th:attr="placeholder='Password'" id="password"
+                                       name="password" type="password" class="validate">
+                            </div>
+                        </div>
+                        <div class="card-content red-text" th:if="${param.error}">
+                            <span id='loginError'></span>
+                        </div>
+                        <div class="card-content red-text"
+                             th:if="${param.logout}">
+                            <span th:text="Logout"></span>
+                        </div>
+                        <div class="card-action center">
+                            <button th:text="Login" onclick="login(event)" class="btn waves-effect waves-light"
+                                    type="submit" name="action"></button>
+                            <a th:text="Register" th:href='@{/register}' class="btn waves-effect waves-light"
+                                    ></a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $('#username').keypress((event) => {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '32') {
+                    event.preventDefault();
+                }
+
+            })
+
+            $("#loginError").html("Invalid username and password");
+
+            login = (event) => {
+                event.preventDefault();
+                console.log("???");
+                var input = $('#username').val();
+                var regex = new RegExp("\\s");
+                if (regex.test(input)) {
+                    alert("Username cannot contain space");
+                } else {
+                    $("#loginForm").submit();
+                }
+            }
+
+
+
+
+
+
+        </script>
+    </body>
 </html>
