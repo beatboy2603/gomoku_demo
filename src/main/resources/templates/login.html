@@ -11,31 +11,38 @@
 	integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
 	crossorigin="anonymous"></script>
 </head>
-<body>
-	<div class="row container">
-		<div class="row">
-			<h3 th:text="Login" class="center"></h3>
+<body class="orange lighten-2">
+	<div class="container">
+		<div class="row container">
+			<div class="card">
+				<form th:action="@{/login1}" method="post" th:object="${account}">
+					<div class="card-content">
+						<span th:text="Login" class="card-title center"></span>
+					</div>
+					<div class="card-content">
+						<div>
+							<input th:attr="placeholder='User name'" id="username"
+								th:field="*{username}" type="text" class="validate"> <span
+								class="red-text text-darken-1"
+								th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error</span>
+						</div>
+					</div>
+					<div class="card-content">
+						<div>
+							<input th:attr="placeholder='Password'" id="password"
+								th:field="*{password}" type="password" class="validate"><span
+								class="red-text text-darken-1"
+								th:if="${#fields.hasErrors('password')}"
+								th:errors="*{password} ">Error</span>
+						</div>
+					</div>
+					<div class="card-action center">
+						<button th:text="Login" class="btn waves-effect waves-light"
+							type="submit" name="action"></button>
+					</div>
+				</form>
+			</div>
 		</div>
-		<form class="col s12">
-			<div class="row">
-				<div class="input-field col s4 offset-s4">
-					<input th:attr="placeholder='User name'" id="username" type="text"
-						class="validate">
-					<!-- <span class="red-text text-darken-1" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error</span> -->
-				</div>
-			</div>
-			<div class="row">
-				<div class="input-field col s4 offset-s4">
-					<input th:attr="placeholder='Password'" id="password"
-						type="password" class="validate">
-					<!-- <span class="red-text text-darken-1" th:if="${#fields.hasErrors('password')}" th:errors="*{password} ">Error</span> -->
-				</div>
-			</div>
-			<div class="row center">
-				<button th:text="Login" class="btn waves-effect waves-light"
-					type="submit" name="action"></button>
-			</div>
-		</form>
 	</div>
 </body>
 </html>
