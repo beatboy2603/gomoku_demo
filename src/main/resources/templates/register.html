@@ -27,7 +27,7 @@ and open the template in the editor.
                         <div class="card-content">
                             <div>
                                 <input th:attr="placeholder='User name'" th:field="*{username}"
-                                       id="username" type="text" class="validate"> <span
+                                       id="username" type="text"> <span
                                         class="red-text text-darken-1"
                                         th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error</span>
                             </div>
@@ -35,7 +35,7 @@ and open the template in the editor.
                         <div class="card-content">
                             <div>
                                 <input th:attr="placeholder='Password'" th:field="*{password}"
-                                       id="password" type="password" class="validate"> <span
+                                       id="password" type="password"> <span
                                         class="red-text text-darken-1"
                                         th:if="${#fields.hasErrors('password')}"
                                         th:errors="*{password} ">Error</span>

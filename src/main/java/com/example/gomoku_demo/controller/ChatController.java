@@ -48,6 +48,7 @@ import org.springframework.web.context.request.RequestContextHolder;
  * @author ADMIN
  */
 @Controller
+
 public class ChatController {
 
     @Autowired
@@ -61,7 +62,7 @@ public class ChatController {
 
     @Autowired
     private ModelMapper modelMapper;
-
+    
     @GetMapping("/chat")
     public String goToChat(Model model, Authentication authentication) {
         model.addAttribute("username", authentication.getName());

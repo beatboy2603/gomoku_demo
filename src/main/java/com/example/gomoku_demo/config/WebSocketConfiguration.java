@@ -42,8 +42,6 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
-    
-    
 
     @Autowired
     private SimpMessagingTemplate template;

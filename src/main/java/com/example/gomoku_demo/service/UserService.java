@@ -35,26 +35,24 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
         return new CustomUserDetail(user);
-	}
+    }
 //	public User register(User user) {
 //		return userRepository.save(user);
 //	}
-	
-	public UserDTO register(User user) {
-		userRepository.save(user);
-		return modelMapper.map(user, UserDTO.class);
-	}
-	
-	public List<User> findFriends(Long userId) {
-		List<User> users = new ArrayList<>();
+
+    public UserDTO register(User user) {
+        userRepository.save(user);
+        return modelMapper.map(user, UserDTO.class);
+    }
+
+    public List<User> findFriends(Long userId) {
+        List<User> users = new ArrayList<>();
 //		users = userRepository.findFriends(userId);
-		return users;
-	}
-	
-	public User login(String username) {
-		return userRepository.findByUsername(username);
-	}
-	
-	
+        return users;
+    }
+
+    public User login(String username) {
+        return userRepository.findByUsername(username);
+    }
 
 }
