@@ -53,6 +53,10 @@ public class UserService implements UserDetailsService {
 		return users;
 	}
 	
+	public User login(String username) {
+		return userRepository.findByUsername(username);
+	}
+	
 	
 
 }

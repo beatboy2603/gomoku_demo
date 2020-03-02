@@ -32,7 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable().authorizeRequests().antMatchers("/", "/home", "/register").permitAll().
-		anyRequest().authenticated().and().formLogin()
+		anyRequest().authenticated().and().formLogin().loginPage("/login")
 				.defaultSuccessUrl("/chat").permitAll().and().logout().permitAll();
 	}
 	

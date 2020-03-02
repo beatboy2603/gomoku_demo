@@ -30,22 +30,9 @@ public class AuthenticationController {
 		return "home";
 	}
 	
-	@GetMapping("/login1")
-	public String login1(Model model) {
-		model.addAttribute("account", new User());
+	@GetMapping("/login")
+	public String login1() {
 		return "login";
-	}
-	
-	@PostMapping("/login1")
-	public String login2(@ModelAttribute @Valid User user, BindingResult bindingResult) {
-		if (bindingResult.hasErrors()) {
-			System.out.println("loi login");
-			return "hoicham";
-		} else {
-			System.out.println("| " + user.getUsername() + " | " + user.getPassword());
-			return "hello";
-		}
-		
 	}
 
 	@GetMapping("/register")
