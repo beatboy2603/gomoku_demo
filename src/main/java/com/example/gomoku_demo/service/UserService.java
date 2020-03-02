@@ -35,8 +35,7 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
         return new CustomUserDetail(user);
-    }
-
+	}
 //	public User register(User user) {
 //		return userRepository.save(user);
 //	}

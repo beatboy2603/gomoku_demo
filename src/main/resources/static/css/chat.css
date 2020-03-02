@@ -5,10 +5,11 @@
     height: 100%; 
     width: 100%; 
     z-index: 2;
-    /*pointer-events:none;*/
+    pointer-events:none;
 }
 
 .dropAndFade {
+    pointer-events:auto;
     animation-name: dropAndFade;
     animation-duration: 5s;
     animation-fill-mode: forwards;

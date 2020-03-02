@@ -24,6 +24,26 @@ $(document).ready(() => {
 });
 
 onBananaLoad = () => {
+//    $("#banana").mousedown(()=>{
+//        $("#banana").removeClass('dropAndFade');
+//        $("#banana").css('top', "calc(100vh - 50px)");
+//        $("#banana").draggable({
+//            scroll: false,
+//            axis: "x,y",
+//            containment: "#bananaDiv",
+//            revert: false,
+//            helper: "orginal",
+//            disable: false,
+//            start: function (event, ui) {
+//                $("#banana").removeClass('dropAndFade');
+//            },
+//            drag: function (event, ui) {
+//            },
+//            stop: function (event, ui) {
+//                $("#banana").addClass('dropAndFade');
+//            }
+//        });
+//    })
     setTimeout(() => {
         $("#banana").removeClass('dropAndFade');
         $("#banana").css('top', "calc(100vh - 50px)");
@@ -43,6 +63,7 @@ onBananaLoad = () => {
                 $("#banana").addClass('dropAndFade');
             }
         });
+        $("#banana").addClass('dropAndFade');
     }, 500)
 }
 

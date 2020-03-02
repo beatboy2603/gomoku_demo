@@ -18,8 +18,8 @@ and open the template in the editor.
 	integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
 	crossorigin="anonymous"></script>
 </head>
-<body>
-	<form th:action="@{/register}" th:object="${user}" method="post">
+<body class="orange lighten-2">
+	<!-- <form th:action="@{/register}" th:object="${user}" method="post">
 		<p>
 			username: <input id="username" type="text" th:field="*{username}" />
 		</p>
@@ -32,28 +32,39 @@ and open the template in the editor.
 		<p>
 			<button type="submit" class="btn btn-success">Register</button>
 		</p>
-	</form>
-	<!-- <div class="row container">
-		<form class="col s12">
-			<div class="row center">
-				<div class="input-field col s6 offset-s3">
-					<input id="first_name" type="text" class="validate"> <label
-						for="first_name">First Name</label>
-				</div>
+	</form> -->
+	<div class="container">
+		<div class="row container">
+			<div class="card">
+				<form th:action="@{/register}" th:object="${user}" method="post">
+					<div class="card-content">
+						<span th:text="Register" class="card-title center"></span>
+					</div>
+					<div class="card-content">
+						<div>
+							<input th:attr="placeholder='User name'" th:field="*{username}"
+								id="username" type="text" class="validate"> <span
+								class="red-text text-darken-1"
+								th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error</span>
+						</div>
+					</div>
+					<div class="card-content">
+						<div>
+							<input th:attr="placeholder='Password'" th:field="*{password}"
+								id="password" type="password" class="validate"> <span
+								class="red-text text-darken-1"
+								th:if="${#fields.hasErrors('password')}"
+								th:errors="*{password} ">Error</span>
+						</div>
+					</div>
+					<div class="card-action center">
+						<button th:text="Register" class="btn waves-effect waves-light"
+							type="submit" name="action"></button>
+					</div>
+				</form>
 			</div>
-			<div class="row">
-				<div class="input-field col s6 offset-s3">
-					<input id="password" type="password" class="validate"> <label
-						for="password">Password</label>
-				</div>
-			</div>
-			<button class="btn waves-effect waves-light" type="submit"
-				name="action">
-				Submit
-			</button>
-			
-		</form>
-	</div> -->
+		</div>
+	</div>
 	<script type="text/javascript">
 	$('#username').keypress((event) => {
 		var keycode = (event.keyCode ? event.keyCode : event.which);
